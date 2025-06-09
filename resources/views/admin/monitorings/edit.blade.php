@@ -48,7 +48,7 @@
                                 <!-- Part Masuk Lab -->
                                 <div>
                                     <x-input-label for="part_masuk_lab" :value="__('Part Masuk Lab')" />
-                                    <x-text-input id="part_masuk_lab" class="block mt-1 w-full" type="date" name="part_masuk_lab" :value="old('part_masuk_lab', $monitoring->part_masuk_lab->format('Y-m-d'))" required />
+                                    <x-text-input id="part_masuk_lab" class="block mt-1 w-full" type="date" name="part_masuk_lab" :value="old('part_masuk_lab', $monitoring->part_masuk_lab ? $monitoring->part_masuk_lab->format('Y-m-d') : '')" required />
                                     <x-input-error :messages="$errors->get('part_masuk_lab')" class="mt-2" />
                                 </div>
                             </div>

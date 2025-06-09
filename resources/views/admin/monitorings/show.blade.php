@@ -37,7 +37,7 @@
                                 </tr>
                                 <tr>
                                     <td class="py-2 pr-4 font-medium">Part Masuk Lab</td>
-                                    <td>{{ $monitoring->part_masuk_lab->format('d/m/Y') }}</td>
+                                    <td>{{ $monitoring->part_masuk_lab ? $monitoring->part_masuk_lab->format('d/m/Y') : '-' }}</td>
                                 </tr>
                                 <tr>
                                     <td class="py-2 pr-4 font-medium">Dibuat Oleh</td>

@@ -53,15 +53,8 @@
             <!-- Running Text -->
             <div class="mt-6 bg-red-600 text-white py-3 px-4 shadow-md rounded-lg overflow-hidden">
                 <div class="running-text-container">
-                    <div class="running-text">
-                        <span>SEMANGAT KERJA!! &nbsp;&nbsp;&nbsp;</span>
-                        <span>SEMANGAT KERJA!! &nbsp;&nbsp;&nbsp;</span>
-                        <span>SEMANGAT KERJA!! &nbsp;&nbsp;&nbsp;</span>
-                        <span>SEMANGAT KERJA!! &nbsp;&nbsp;&nbsp;</span>
-                        <span>SEMANGAT KERJA!! &nbsp;&nbsp;&nbsp;</span>
-                        <span>SEMANGAT KERJA!! &nbsp;&nbsp;&nbsp;</span>
-                        <span>SEMANGAT KERJA!! &nbsp;&nbsp;&nbsp;</span>
-                        <span>SEMANGAT KERJA!! &nbsp;&nbsp;&nbsp;</span>
+                    <div id="running-text-content" class="running-text">
+                        <!-- Akan diisi oleh JavaScript -->
                     </div>
                 </div>
             </div>
@@ -107,34 +100,33 @@
             }
         }
         
-        /* Running text styles */
+        /* Running text styles - yang dimodifikasi */
         .running-text-container {
             width: 100%;
             overflow: hidden;
+            position: relative;
+            height: 2.5rem; /* Tinggi tetap untuk container */
         }
         
         .running-text {
-            display: inline-block;
+            position: absolute;
             white-space: nowrap;
-            animation: marquee 30s linear infinite;
             font-size: 1.25rem;
             font-weight: 600;
             letter-spacing: 1px;
+            animation: pulse 2s infinite;
+            right: -100%; /* Mulai dari luar layar di kanan */
+            animation: runningTextAnimation 15s linear infinite;
+            animation-play-state: paused; /* Akan dijalankan oleh JavaScript */
         }
         
-        @keyframes marquee {
+        @keyframes runningTextAnimation {
             0% {
-                transform: translateX(100%);
+                right: -100%;
             }
             100% {
-                transform: translateX(-100%);
+                right: 100%;
             }
-        }
-        
-        /* Add a subtle pulse effect to the text */
-        .running-text span {
-            display: inline-block;
-            animation: pulse 2s infinite;
         }
         
         @keyframes pulse {
@@ -146,7 +138,7 @@
             }
         }
         
-        /* Fade in/out animations */
+        /* Fade in/out animations tetap sama */
         .fade-element {
             transition: opacity 1s ease-in-out;
         }
@@ -296,6 +288,73 @@
             
             // Mulai menampilkan data
             showData();
+
+            // Fungsi untuk running text satu per satu
+            function setupRunningText() {
+                // Ambil data running text dari PHP
+                const runningTexts = @json($runningTexts->toArray());
+                
+                // Default text jika tidak ada data
+                if (runningTexts.length === 0) {
+                    runningTexts.push({
+                        id: 0,
+                        text: 'SEMANGAT KERJA!!',
+                        active: true
+                    });
+                }
+                
+                // Filter hanya text yang aktif
+                const activeTexts = runningTexts.filter(text => text.active);
+                
+                if (activeTexts.length === 0) {
+                    return; // Tidak ada teks aktif, jangan tampilkan apapun
+                }
+                
+                // Element untuk running text
+                const runningTextElement = document.getElementById('running-text-content');
+                
+                // Index text yang sedang ditampilkan
+                let currentTextIndex = 0;
+                
+                // Fungsi untuk menampilkan teks selanjutnya
+                function showNextText() {
+                    const currentText = activeTexts[currentTextIndex];
+                    
+                    // Reset animasi dengan menghapus element dan membuatnya kembali
+                    runningTextElement.innerHTML = '';
+                    runningTextElement.style.animation = 'none';
+                    
+                    // Force reflow
+                    void runningTextElement.offsetWidth;
+                    
+                    // Set teks baru
+                    runningTextElement.textContent = currentText.text;
+                    
+                    // Tentukan durasi animasi berdasarkan panjang teks
+                    const animationDuration = Math.max(8, currentText.text.length * 0.3); // Minimal 8 detik, atau lebih jika teks panjang
+                    
+                    // Mulai animasi baru
+                    runningTextElement.style.animation = `runningTextAnimation ${animationDuration}s linear 1`;
+                    
+                    // Ketika animasi selesai, tampilkan teks berikutnya
+                    runningTextElement.addEventListener('animationend', function handler() {
+                        // Increment index dan reset jika sudah di akhir
+                        currentTextIndex = (currentTextIndex + 1) % activeTexts.length;
+                        
+                        // Hapus event listener ini untuk mencegah duplikasi
+                        runningTextElement.removeEventListener('animationend', handler);
+                        
+                        // Panggil fungsi ini lagi untuk menampilkan teks berikutnya
+                        setTimeout(showNextText, 500); // Tunggu 0.5 detik sebelum menampilkan teks berikutnya
+                    }, { once: true });
+                }
+                
+                // Mulai running text
+                showNextText();
+            }
+            
+            // Inisialisasi running text
+            setupRunningText();
         });
     </script>
 </x-app-layout>

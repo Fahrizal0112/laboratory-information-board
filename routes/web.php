@@ -26,7 +26,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             })
             ->latest()
             ->get();
-        return view('dashboard', compact('approvedMonitorings'));
+        
+        $runningTexts = \App\Models\RunningText::where('active', true)
+            ->orderBy('order')
+            ->get();
+        
+        return view('dashboard', compact('approvedMonitorings', 'runningTexts'));
     })->name('dashboard');
     
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -55,6 +60,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::resource('monitorings', \App\Http\Controllers\Admin\MonitoringController::class, [
         'as' => 'admin'
     ]);
+
+    // Route untuk running text
+    Route::resource('running-texts', \App\Http\Controllers\Admin\RunningTextController::class, [
+        'as' => 'admin'
+    ]);
+    Route::post('running-texts/reorder', [\App\Http\Controllers\Admin\RunningTextController::class, 'reorder'])->name('admin.running-texts.reorder');
 });
 
 require __DIR__.'/auth.php';

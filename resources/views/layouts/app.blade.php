@@ -77,6 +77,9 @@
                     <div>
                         <p class="text-sm">&copy; {{ date('Y') }} Laboratory Information Board. All rights reserved.</p>
                     </div>
+                    <div>
+                        <p class="text-sm">Laboratory Information Board</p>
+                    </div>
                 </div>
             </div>
         </footer>

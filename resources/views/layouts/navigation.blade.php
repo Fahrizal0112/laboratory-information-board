@@ -40,6 +40,10 @@
                                 @endif
                             </span>
                         </x-nav-link>
+
+                        <x-nav-link :href="route('admin.running-texts.index')" :active="request()->routeIs('admin.running-texts.*')" class="text-white hover:text-red-200" :activeClass="'border-b-2 border-red-300 text-red-100'">
+                            {{ __('Running Text') }}
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -122,6 +126,10 @@
                             </span>
                         @endif
                     </span>
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('admin.running-texts.index')" :active="request()->routeIs('admin.running-texts.*')" class="text-white hover:bg-red-700">
+                    {{ __('Running Text') }}
                 </x-responsive-nav-link>
             @endif
         </div>
