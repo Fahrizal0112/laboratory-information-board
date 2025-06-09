@@ -32,6 +32,12 @@
                         </a>
                     @else
                         <a
+                            href="{{ url('/dashboard') }}"
+                            class="inline-block px-5 py-1.5 border-[#19140035] hover:border-[#1915014a] border text-[#1b1b18] rounded-sm text-sm leading-normal"
+                        >
+                            Dashboard
+                        </a>
+                        <a
                             href="{{ route('login') }}"
                             class="inline-block px-5 py-1.5 text-[#1b1b18] border border-transparent hover:border-[#19140035] rounded-sm text-sm leading-normal"
                         >
@@ -88,6 +94,11 @@
                                 Login Now
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ url('/dashboard') }}" class="inline-block hover:bg-[#F53003] hover:border-[#F53003] hover:text-white px-5 py-1.5 bg-white rounded-sm border border-[#F53003] text-[#F53003] text-sm leading-normal">
+                                View Dashboard
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="bg-[#fff2f2] relative lg:-ml-px -mb-px lg:mb-0 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg aspect-[335/376] lg:aspect-auto w-full lg:w-[438px] shrink-0 overflow-hidden">
@@ -112,6 +123,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                     </svg>
                                 </div>
+                            </div>
+                            <div class="mt-8">
+                                <a href="{{ url('/dashboard') }}" class="inline-block px-6 py-3 bg-[#F53003] text-white font-medium rounded-md hover:bg-[#D52800] transition-colors">
+                                    Lihat Dashboard
+                                </a>
                             </div>
                         </div>
                     </div>

@@ -15,25 +15,26 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+// Rute dashboard yang dapat diakses tanpa login
+Route::get('/dashboard', function () {
+    $approvedMonitorings = \App\Models\Monitoring::with('user')
+        ->where(function($query) {
+            $query->where('status', 'approved')
+                ->orWhere('status', 'in_progress')
+                ->orWhere('status', 'completed');
+        })
+        ->latest()
+        ->get();
+    
+    $runningTexts = \App\Models\RunningText::where('active', true)
+        ->orderBy('order')
+        ->get();
+        
+    return view('dashboard', compact('approvedMonitorings', 'runningTexts'));
+})->name('dashboard');
+
 // Rute yang memerlukan autentikasi
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        $approvedMonitorings = \App\Models\Monitoring::with('user')
-            ->where(function($query) {
-                $query->where('status', 'approved')
-                    ->orWhere('status', 'in_progress')
-                    ->orWhere('status', 'completed');
-            })
-            ->latest()
-            ->get();
-        
-        $runningTexts = \App\Models\RunningText::where('active', true)
-            ->orderBy('order')
-            ->get();
-        
-        return view('dashboard', compact('approvedMonitorings', 'runningTexts'));
-    })->name('dashboard');
-    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -66,6 +67,26 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
         'as' => 'admin'
     ]);
     Route::post('running-texts/reorder', [\App\Http\Controllers\Admin\RunningTextController::class, 'reorder'])->name('admin.running-texts.reorder');
+});
+
+Route::get('/dashboard/data', function () {
+    $approvedMonitorings = \App\Models\Monitoring::with('user')
+        ->where(function($query) {
+            $query->where('status', 'approved')
+                ->orWhere('status', 'in_progress')
+                ->orWhere('status', 'completed');
+        })
+        ->latest()
+        ->get();
+    
+    $runningTexts = \App\Models\RunningText::where('active', true)
+        ->orderBy('order')
+        ->get();
+        
+    return response()->json([
+        'approvedMonitorings' => $approvedMonitorings,
+        'runningTexts' => $runningTexts
+    ]);
 });
 
 require __DIR__.'/auth.php';

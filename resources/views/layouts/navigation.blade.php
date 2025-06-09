@@ -64,21 +64,33 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')" class="hover:bg-red-50">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();"
-                                    class="hover:bg-red-50">
-                                {{ __('Log Out') }}
+                        @if(Auth::check())
+                            <x-dropdown-link :href="route('profile.edit')" class="hover:bg-red-50">
+                                {{ __('Profile') }}
                             </x-dropdown-link>
-                        </form>
+
+                            <!-- Authentication -->
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+
+                                <x-dropdown-link :href="route('logout')"
+                                        onclick="event.preventDefault();
+                                                    this.closest('form').submit();"
+                                        class="hover:bg-red-50">
+                                    {{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </form>
+                        @else
+                            <x-dropdown-link :href="route('login')" class="hover:bg-red-50">
+                                {{ __('Log In') }}
+                            </x-dropdown-link>
+                            
+                            @if (Route::has('register'))
+                                <x-dropdown-link :href="route('register')" class="hover:bg-red-50">
+                                    {{ __('Register') }}
+                                </x-dropdown-link>
+                            @endif
+                        @endif
                     </x-slot>
                 </x-dropdown>
             </div>
@@ -142,21 +154,33 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')" class="text-white hover:bg-red-700">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();"
-                            class="text-white hover:bg-red-700">
-                        {{ __('Log Out') }}
+                @if(Auth::check())
+                    <x-responsive-nav-link :href="route('profile.edit')" class="text-white hover:bg-red-700">
+                        {{ __('Profile') }}
                     </x-responsive-nav-link>
-                </form>
+
+                    <!-- Authentication -->
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+
+                        <x-responsive-nav-link :href="route('logout')"
+                                onclick="event.preventDefault();
+                                            this.closest('form').submit();"
+                                class="text-white hover:bg-red-700">
+                            {{ __('Log Out') }}
+                        </x-responsive-nav-link>
+                    </form>
+                @else
+                    <x-responsive-nav-link :href="route('login')" class="text-white hover:bg-red-700">
+                        {{ __('Log In') }}
+                    </x-responsive-nav-link>
+                    
+                    @if (Route::has('register'))
+                        <x-responsive-nav-link :href="route('register')" class="text-white hover:bg-red-700">
+                            {{ __('Register') }}
+                        </x-responsive-nav-link>
+                    @endif
+                @endif
             </div>
         </div>
     </div>

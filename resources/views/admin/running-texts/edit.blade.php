@@ -23,7 +23,8 @@
 
                         <div class="mb-4">
                             <label for="active" class="inline-flex items-center">
-                                <input type="checkbox" name="active" id="active" class="rounded border-gray-300 text-red-600 shadow-sm focus:border-red-500 focus:ring focus:ring-red-500 focus:ring-opacity-50" {{ old('active', $runningText->active) ? 'checked' : '' }}>
+                                <input type="hidden" name="active" value="0">
+                                <input type="checkbox" name="active" id="active" value="1" class="rounded border-gray-300 text-red-600 shadow-sm focus:border-red-500 focus:ring focus:ring-red-500 focus:ring-opacity-50" {{ old('active', $runningText->active) ? 'checked' : '' }}>
                                 <span class="ml-2 text-sm text-gray-700">Aktif</span>
                             </label>
                         </div>

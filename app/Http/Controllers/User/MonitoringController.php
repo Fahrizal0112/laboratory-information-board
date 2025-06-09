@@ -37,6 +37,7 @@ class MonitoringController extends Controller
             'type' => 'required|string|max:255',
             'no_mol' => 'required|string|max:255',
             'background' => 'required|string|max:255',
+            'request_type' => 'required|in:Measuring,Testing',
         ]);
 
         Monitoring::create([
@@ -45,6 +46,7 @@ class MonitoringController extends Controller
             'type' => $request->type,
             'no_mol' => $request->no_mol,
             'background' => $request->background,
+            'request' => $request->request_type,
             'status' => 'pending',
         ]);
 
@@ -83,8 +85,8 @@ class MonitoringController extends Controller
      */
     public function update(Request $request, Monitoring $monitoring)
     {
-        // Pastikan user hanya bisa mengupdate data miliknya dan yang masih pending
-        if ($monitoring->user_id !== Auth::id() || !$monitoring->isPending()) {
+        // Pastikan user hanya bisa mengedit data miliknya
+        if ($monitoring->user_id !== Auth::id()) {
             abort(403);
         }
         
@@ -93,18 +95,19 @@ class MonitoringController extends Controller
             'type' => 'required|string|max:255',
             'no_mol' => 'required|string|max:255',
             'background' => 'required|string|max:255',
+            'request_type' => 'required|in:Measuring,Testing',
         ]);
-
+        
         $monitoring->update([
             'nama_part' => $request->nama_part,
             'type' => $request->type,
             'no_mol' => $request->no_mol,
             'background' => $request->background,
-            'status' => 'pending', // Reset status ke pending jika diedit
+            'request' => $request->request_type,
         ]);
-
+        
         return redirect()->route('user.monitorings.index')
-            ->with('success', 'Data monitoring berhasil diperbarui dan menunggu persetujuan admin.');
+            ->with('success', 'Data monitoring berhasil diperbarui.');
     }
 
     /**

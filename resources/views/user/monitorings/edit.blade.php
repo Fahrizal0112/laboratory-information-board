@@ -41,6 +41,17 @@
                             <x-input-error :messages="$errors->get('background')" class="mt-2" />
                         </div>
 
+                        <!-- Request Type -->
+                        <div class="mt-4">
+                            <x-input-label for="request_type" :value="__('Request')" class="text-red-700" />
+                            <select id="request_type" name="request_type" class="block mt-1 w-full border-red-300 focus:border-red-500 focus:ring-red-500 rounded-md shadow-sm" required>
+                                <option value="" disabled>Pilih jenis request</option>
+                                <option value="Measuring" {{ old('request_type', $monitoring->request) == 'Measuring' ? 'selected' : '' }}>Measuring</option>
+                                <option value="Testing" {{ old('request_type', $monitoring->request) == 'Testing' ? 'selected' : '' }}>Testing</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('request_type')" class="mt-2" />
+                        </div>
+
                         <!-- Part Masuk Lab -->
                         {{-- <div class="mt-4">
                             <x-input-label for="part_masuk_lab" :value="__('Part Masuk Lab')" class="text-red-700" />

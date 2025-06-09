@@ -15,6 +15,7 @@ class Monitoring extends Model
         'type',
         'no_mol',
         'background',
+        'request',
         'part_masuk_lab',
         'start',
         'finish',
@@ -57,5 +58,15 @@ class Monitoring extends Model
     public function isCompleted()
     {
         return $this->status === 'completed';
+    }
+    
+    public function isMeasuring()
+    {
+        return $this->request === 'Measuring';
+    }
+    
+    public function isTesting()
+    {
+        return $this->request === 'Testing';
     }
 }

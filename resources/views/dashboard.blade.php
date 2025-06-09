@@ -21,6 +21,7 @@
                                         <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">Nama Part</th>
                                         <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">Type</th>
                                         <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">No Mold / Cavity</th>
+                                        <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">Request</th>
                                         <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">Masuk Lab</th>
                                         <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">Start</th>
                                         <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">Finish</th>
@@ -155,13 +156,13 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Data monitoring dari server
-            const allData = @json($approvedMonitorings->toArray());
+            let allData = @json($approvedMonitorings->toArray());
             
             // Jumlah data per halaman
             const perPage = 5;
             
             // Hitung total halaman
-            const totalPages = Math.ceil(allData.length / perPage) || 1;
+            let totalPages = Math.ceil(allData.length / perPage) || 1;
             
             // Halaman saat ini
             let currentPage = 0;
@@ -169,11 +170,29 @@
             // Referensi ke tbody
             const tbody = document.getElementById('monitoring-data');
             
+            // Flag untuk menandai apakah sedang dalam proses animasi
+            let isAnimating = false;
+            
+            // Timer untuk rotasi halaman
+            let pageRotationTimer = null;
+            
             // Fungsi untuk menampilkan data berdasarkan halaman
-            function showData() {
+            function showData(resetPage = false) {
                 // Jika tidak ada data, jangan gunakan animasi
                 if (allData.length === 0) {
                     return;
+                }
+                
+                // Jika sedang dalam proses animasi, batalkan
+                if (isAnimating) {
+                    return;
+                }
+                
+                isAnimating = true;
+                
+                // Reset halaman jika diminta
+                if (resetPage) {
+                    currentPage = 0;
                 }
                 
                 // Fade out
@@ -224,31 +243,36 @@
                             
                             if (monitoring.status === 'approved') {
                                 statusLabel = 'Open';
-                                statusClass = 'bg-gray-100 text-gray-800';
+                                statusClass = 'bg-gray-300 text-gray-800';
                             } else if (monitoring.status === 'in_progress') {
                                 statusLabel = 'In Progress';
-                                statusClass = 'bg-yellow-100 text-yellow-800';
+                                statusClass = 'bg-yellow-300 text-yellow-800';
                             } else if (monitoring.status === 'completed') {
                                 statusLabel = 'Close';
-                                statusClass = 'bg-green-100 text-green-800';
+                                statusClass = 'bg-green-300 text-green-800';
                             } else if (monitoring.status === 'pending') {
                                 statusLabel = 'Pending';
-                                statusClass = 'bg-red-100 text-red-800';
+                                statusClass = 'bg-red-300 text-red-800';
                             }
                             
                             // Pastikan user ada sebelum mencoba mengakses propertinya
                             const userName = monitoring.user ? monitoring.user.name : 'Tidak diketahui';
                             
                             tr.innerHTML = `
-                                <td class="p-2 text-sm text-gray-700" title="${actualIndex + 1}">${actualIndex + 1}</td>
-                                <td class="p-2 text-sm font-medium text-gray-900" title="${userName}">${userName}</td>
-                                <td class="p-2 text-sm font-medium text-gray-900" title="${monitoring.nama_part}">${monitoring.nama_part}</td>
-                                <td class="p-2 text-sm text-gray-700" title="${monitoring.type}">${monitoring.type}</td>
-                                <td class="p-2 text-sm text-gray-700" title="${monitoring.no_mol}">${monitoring.no_mol}</td>
-                                <td class="p-2 text-sm text-gray-700" title="${formattedPartMasukLab}">${formattedPartMasukLab}</td>
-                                <td class="p-2 text-sm text-gray-700" title="${formattedStart}">${formattedStart}</td>
-                                <td class="p-2 text-sm text-gray-700" title="${formattedFinish}">${formattedFinish}</td>
-                                <td class="p-2 text-sm text-gray-700">
+                                <td class="p-2 text-sm text-gray-900 border-r" title="${actualIndex + 1}">${actualIndex + 1}</td>
+                                <td class="p-2 text-sm font-medium text-gray-900 border-r" title="${userName}">${userName}</td>
+                                <td class="p-2 text-sm font-medium text-gray-900 border-r" title="${monitoring.nama_part}">${monitoring.nama_part}</td>
+                                <td class="p-2 text-sm text-gray-900 border-r" title="${monitoring.type}">${monitoring.type}</td>
+                                <td class="p-2 text-sm text-gray-900 border-r" title="${monitoring.no_mol}">${monitoring.no_mol}</td>
+                                <td class="p-2 text-sm text-gray-900 border-r">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${monitoring.request === 'Measuring' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}" title="${monitoring.request || '-'}">
+                                        ${monitoring.request || '-'}
+                                    </span>
+                                </td>
+                                <td class="p-2 text-sm text-gray-900 border-r" title="${formattedPartMasukLab}">${formattedPartMasukLab}</td>
+                                <td class="p-2 text-sm text-gray-900 border-r" title="${formattedStart}">${formattedStart}</td>
+                                <td class="p-2 text-sm text-gray-900 border-r" title="${formattedFinish}">${formattedFinish}</td>
+                                <td class="p-2 text-sm text-gray-900">
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}" title="${statusLabel}">
                                         ${statusLabel}
                                     </span>
@@ -267,6 +291,8 @@
                     
                     // Update nomor halaman
                     document.getElementById('current-page').textContent = currentPage + 1;
+                    document.getElementById('total-pages').textContent = totalPages;
+                    document.getElementById('total-data').textContent = allData.length;
                     
                     // Increment halaman untuk tampilan berikutnya
                     currentPage = (currentPage + 1) % totalPages;
@@ -274,16 +300,22 @@
                     // Fade in
                     setTimeout(() => {
                         tbody.classList.remove('fade-out');
-                    }, 50);
-                    
-                    // Jika tidak ada data atau hanya 1 halaman, jangan gunakan interval
-                    if (allData.length <= perPage) {
-                        return;
-                    }
-                    
-                    // Set timeout untuk menampilkan halaman berikutnya
-                    setTimeout(showData, 10000); // 10 detik
-                }, 1000); // Tunggu 1 detik untuk animasi fade out
+                        isAnimating = false;
+                        
+                        // Jika tidak ada data atau hanya 1 halaman, jangan gunakan interval
+                        if (allData.length <= perPage) {
+                            return;
+                        }
+                        
+                        // Hapus timer sebelumnya jika ada
+                        if (pageRotationTimer) {
+                            clearTimeout(pageRotationTimer);
+                        }
+                        
+                        // Set timeout untuk menampilkan halaman berikutnya
+                        pageRotationTimer = setTimeout(showData, 10000); // 10 detik
+                    }, 300); // Tunggu 300ms untuk animasi fade in
+                }, 300); // Tunggu 300ms untuk animasi fade out
             }
             
             // Mulai menampilkan data
@@ -355,6 +387,45 @@
             
             // Inisialisasi running text
             setupRunningText();
+            
+            // Fungsi untuk memeriksa data baru
+            function checkForNewData() {
+                fetch('/dashboard/data')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Periksa apakah ada perubahan data dengan membandingkan jumlah data
+                        const newDataLength = data.approvedMonitorings.length;
+                        const oldDataLength = allData.length;
+                        
+                        if (newDataLength !== oldDataLength) {
+                            console.log(`Data baru terdeteksi: ${newDataLength} items (sebelumnya ${oldDataLength})`);
+                            
+                            // Update data
+                            allData = data.approvedMonitorings;
+                            totalPages = Math.ceil(allData.length / perPage) || 1;
+                            
+                            // Hentikan rotasi halaman yang sedang berjalan
+                            if (pageRotationTimer) {
+                                clearTimeout(pageRotationTimer);
+                                pageRotationTimer = null;
+                            }
+                            
+                            // Perbarui tampilan dari halaman pertama
+                            showData(true);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error saat memeriksa data baru:', error);
+                    });
+            }
+            
+            // Periksa data baru setiap 30 detik
+            setInterval(checkForNewData, 10000);
         });
     </script>
 </x-app-layout>

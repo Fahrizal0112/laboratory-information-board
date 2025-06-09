@@ -28,7 +28,7 @@
 
                         <!-- No Mol -->
                         <div class="mt-4">
-                            <x-input-label for="no_mol" :value="__('No Mol')" class="text-red-700" />
+                            <x-input-label for="no_mol" :value="__('No Mold')" class="text-red-700" />
                             <x-text-input id="no_mol" class="block mt-1 w-full border-red-300 focus:border-red-500 focus:ring-red-500" type="text" name="no_mol" :value="old('no_mol')" required />
                             <x-input-error :messages="$errors->get('no_mol')" class="mt-2" />
                         </div>
@@ -38,6 +38,17 @@
                             <x-input-label for="background" :value="__('Background')" class="text-red-700" />
                             <x-text-input id="background" class="block mt-1 w-full border-red-300 focus:border-red-500 focus:ring-red-500" type="text" name="background" :value="old('background')" required />
                             <x-input-error :messages="$errors->get('background')" class="mt-2" />
+                        </div>
+
+                        <!-- Request Type -->
+                        <div class="mt-4">
+                            <x-input-label for="request_type" :value="__('Request')" class="text-red-700" />
+                            <select id="request_type" name="request_type" class="block mt-1 w-full border-red-300 focus:border-red-500 focus:ring-red-500 rounded-md shadow-sm" required>
+                                <option value="" disabled {{ old('request_type') ? '' : 'selected' }}>Pilih jenis request</option>
+                                <option value="Measuring" {{ old('request_type') == 'Measuring' ? 'selected' : '' }}>Measuring</option>
+                                <option value="Testing" {{ old('request_type') == 'Testing' ? 'selected' : '' }}>Testing</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('request_type')" class="mt-2" />
                         </div>
 
                         <div class="flex items-center justify-end mt-4">

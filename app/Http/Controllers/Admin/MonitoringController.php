@@ -51,12 +51,14 @@ class MonitoringController extends Controller
             'kode_antrian' => 'required|string|max:255',
             'status' => 'required|in:pending,approved,rejected,in_progress,completed',
             'catatan' => 'nullable|string',
+            'request_type' => 'required|in:Measuring,Testing',
         ]);
 
         $data = [
             'kode_antrian' => $request->kode_antrian,
             'status' => $request->status,
             'catatan' => $request->catatan,
+            'request' => $request->request_type,
         ];
 
         // Jika status diubah menjadi in_progress, set waktu mulai

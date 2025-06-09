@@ -39,6 +39,14 @@
                                     <td class="py-2 pr-4 font-medium text-red-700">Part Masuk Lab</td>
                                     <td>{{ $monitoring->part_masuk_lab->format('d/m/Y') }}</td>
                                 </tr>
+                                <tr>
+                                    <td class="py-2 pr-4 font-medium">Request</td>
+                                    <td>
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $monitoring->request == 'Measuring' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
+                                            {{ $monitoring->request ?? 'Belum ditetapkan' }}
+                                        </span>
+                                    </td>
+                                </tr>
                             </table>
                         </div>
 

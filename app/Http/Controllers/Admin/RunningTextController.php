@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\RunningText;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class RunningTextController extends Controller
 {
@@ -63,12 +64,16 @@ class RunningTextController extends Controller
     {
         $request->validate([
             'text' => 'required|string|max:255',
-            'active' => 'boolean',
         ]);
 
+        // Debug untuk melihat apa yang dikirim form
+        Log::info('Request data:', $request->all());
+        Log::info('Has active?', [$request->has('active')]);
+        
+        // Perbarui running text
         $runningText->update([
             'text' => $request->text,
-            'active' => $request->has('active'),
+            'active' => $request->boolean('active'), // Gunakan boolean() untuk menghandle checkbox dengan lebih baik
         ]);
 
         return redirect()->route('admin.running-texts.index')

@@ -51,6 +51,17 @@
                                     <x-text-input id="part_masuk_lab" class="block mt-1 w-full" type="date" name="part_masuk_lab" :value="old('part_masuk_lab', $monitoring->part_masuk_lab ? $monitoring->part_masuk_lab->format('Y-m-d') : '')" required />
                                     <x-input-error :messages="$errors->get('part_masuk_lab')" class="mt-2" />
                                 </div>
+
+                                <!-- Request -->
+                                <div class="mb-4">
+                                    <x-input-label for="request_type" :value="__('Request')" />
+                                    <select id="request_type" name="request_type" class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                                        <option value="" disabled>Pilih jenis request</option>
+                                        <option value="Measuring" {{ old('request_type', $monitoring->request) == 'Measuring' ? 'selected' : '' }}>Measuring</option>
+                                        <option value="Testing" {{ old('request_type', $monitoring->request) == 'Testing' ? 'selected' : '' }}>Testing</option>
+                                    </select>
+                                    <x-input-error :messages="$errors->get('request_type')" class="mt-2" />
+                                </div>
                             </div>
 
                             <div>
