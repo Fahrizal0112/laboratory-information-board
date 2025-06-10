@@ -23,8 +23,8 @@
                             {{ __('Manajemen User') }}
                         </x-nav-link>
 
-                        <x-nav-link :href="route('admin.monitorings.index')" :active="request()->routeIs('admin.monitorings.*')" class="text-white hover:text-red-200" :activeClass="'border-b-2 border-red-300 text-red-100'">
-                            {{ __('Manajemen Monitoring') }}
+                        <x-nav-link :href="route('admin.monitorings.index')" :active="request()->routeIs('admin.monitorings.index')" class="text-white hover:text-red-200" :activeClass="'border-b-2 border-red-300 text-red-100'">
+                            {{ __('Semua Data') }}
                         </x-nav-link>
 
                         <x-nav-link :href="route('admin.monitorings.pending')" :active="request()->routeIs('admin.monitorings.pending')" class="text-white hover:text-red-200" :activeClass="'border-b-2 border-red-300 text-red-100'">
@@ -39,6 +39,14 @@
                                     </span>
                                 @endif
                             </span>
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('admin.monitorings.completed')" :active="request()->routeIs('admin.monitorings.completed')" class="text-white hover:text-red-200" :activeClass="'border-b-2 border-red-300 text-red-100'">
+                            {{ __('Data Selesai') }}
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('admin.monitorings.archived')" :active="request()->routeIs('admin.monitorings.archived')" class="text-white hover:text-red-200" :activeClass="'border-b-2 border-red-300 text-red-100'">
+                            {{ __('Data Arsip') }}
                         </x-nav-link>
 
                         <x-nav-link :href="route('admin.running-texts.index')" :active="request()->routeIs('admin.running-texts.*')" class="text-white hover:text-red-200" :activeClass="'border-b-2 border-red-300 text-red-100'">
@@ -152,6 +160,14 @@
                             </span>
                         @endif
                     </span>
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('admin.monitorings.completed')" :active="request()->routeIs('admin.monitorings.completed')" class="text-white hover:bg-red-700">
+                    {{ __('Data Selesai') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('admin.monitorings.archived')" :active="request()->routeIs('admin.monitorings.archived')" class="text-white hover:bg-red-700">
+                    {{ __('Data Arsip') }}
                 </x-responsive-nav-link>
 
                 <x-responsive-nav-link :href="route('admin.running-texts.index')" :active="request()->routeIs('admin.running-texts.*')" class="text-white hover:bg-red-700">

@@ -106,6 +106,17 @@
                             </button>
                         @endif
                     </div>
+
+                    <!-- Tombol Arsip untuk data completed -->
+                    @if($monitoring->isCompleted())
+                        <form method="POST" action="{{ route('admin.monitorings.archive', $monitoring->id) }}" class="mt-4">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md" onclick="return confirm('Apakah Anda yakin ingin mengarsipkan data ini?')">
+                                {{ __('Arsipkan Data') }}
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>

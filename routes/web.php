@@ -56,8 +56,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     
     // Route untuk monitoring
     Route::get('/monitorings/pending', [\App\Http\Controllers\Admin\MonitoringController::class, 'pending'])->name('admin.monitorings.pending');
+    Route::get('/monitorings/completed', [\App\Http\Controllers\Admin\MonitoringController::class, 'completed'])->name('admin.monitorings.completed');
+    Route::get('/monitorings/archived', [\App\Http\Controllers\Admin\MonitoringController::class, 'archived'])->name('admin.monitorings.archived');
     Route::post('/monitorings/{monitoring}/approve', [\App\Http\Controllers\Admin\MonitoringController::class, 'approve'])->name('admin.monitorings.approve');
     Route::post('/monitorings/{monitoring}/reject', [\App\Http\Controllers\Admin\MonitoringController::class, 'reject'])->name('admin.monitorings.reject');
+    Route::delete('/monitorings/{monitoring}/archive', [\App\Http\Controllers\Admin\MonitoringController::class, 'archive'])->name('admin.monitorings.archive');
+    Route::post('/monitorings/{monitoring}/restore', [\App\Http\Controllers\Admin\MonitoringController::class, 'restore'])->name('admin.monitorings.restore');
+    Route::delete('/monitorings/{monitoring}/force-delete', [\App\Http\Controllers\Admin\MonitoringController::class, 'forceDelete'])->name('admin.monitorings.force-delete');
     Route::resource('monitorings', \App\Http\Controllers\Admin\MonitoringController::class, [
         'as' => 'admin'
     ]);
