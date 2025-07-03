@@ -37,6 +37,32 @@
                             <x-input-error :messages="$errors->get('role')" class="mt-2" />
                         </div>
 
+                        <!-- Department -->
+                        <div class="mt-4">
+                            <x-input-label for="dept" :value="__('Department')" />
+                            <select id="dept" name="dept" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mt-1 w-full" required>
+                                <option value="" disabled>-- Pilih Department --</option>
+                                <option value="Quality" {{ old('dept', $user->dept) == 'Quality' ? 'selected' : '' }}>Quality</option>
+                                <option value="PPIC" {{ old('dept', $user->dept) == 'PPIC' ? 'selected' : '' }}>PPIC</option>
+                                <option value="Engineering" {{ old('dept', $user->dept) == 'Engineering' ? 'selected' : '' }}>Engineering</option>
+                                <option value="Plant Engineering" {{ old('dept', $user->dept) == 'Plant Engineering' ? 'selected' : '' }}>Plant Engineering</option>
+                                <option value="Robot" {{ old('dept', $user->dept) == 'Robot' ? 'selected' : '' }}>Robot</option>
+                                <option value="Produksi" {{ old('dept', $user->dept) == 'Produksi' ? 'selected' : '' }}>Produksi</option>
+                                <option value="Mold and Material Development" {{ old('dept', $user->dept) == 'Mold and Material Development' ? 'selected' : '' }}>Mold and Material Development</option>
+                                <option value="Health Care Unit" {{ old('dept', $user->dept) == 'Health Care Unit' ? 'selected' : '' }}>Health Care Unit</option>
+                                <option value="Purchasing" {{ old('dept', $user->dept) == 'Purchasing' ? 'selected' : '' }}>Purchasing</option>
+                                <option value="New Project Development" {{ old('dept', $user->dept) == 'New Project Development' ? 'selected' : '' }}>New Project Development</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('dept')" class="mt-2" />
+                        </div>
+
+                        <!-- NPK -->
+                        <div class="mt-4">
+                            <x-input-label for="npk" :value="__('NPK')" />
+                            <x-text-input id="npk" class="block mt-1 w-full" type="text" name="npk" :value="old('npk', $user->npk)" required />
+                            <x-input-error :messages="$errors->get('npk')" class="mt-2" />
+                        </div>
+
                         <!-- Password -->
                         <div class="mt-4">
                             <x-input-label for="password" :value="__('Password (Leave blank if not changing)')" />
@@ -74,4 +100,4 @@
             </div>
         </div>
     </div>
-</x-app-layout> 
+</x-app-layout>

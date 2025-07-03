@@ -18,8 +18,7 @@
                                     <tr>
                                         <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">No</th>
                                         <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">Pemohon</th>
-                                        <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">Nama Part</th>
-                                        <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">Type</th>
+                                        <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">No Order</th>
                                         <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">No Mold / Cavity</th>
                                         <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">Request</th>
                                         <th class="p-2 text-left text-xs font-medium text-red-700 uppercase">Masuk Lab</th>
@@ -31,7 +30,7 @@
                                 <tbody id="monitoring-data" class="divide-y divide-red-100 fade-element">
                                     @if($approvedMonitorings->isEmpty())
                                         <tr>
-                                            <td colspan="9" class="p-2 text-center text-sm text-gray-500">Tidak ada data monitoring yang disetujui.</td>
+                                            <td colspan="8" class="p-2 text-center text-sm text-gray-500">Tidak ada data monitoring yang disetujui.</td>
                                         </tr>
                                     @endif
                                     <!-- Data akan diisi oleh JavaScript -->
@@ -86,13 +85,13 @@
             
             th:nth-child(1), td:nth-child(1) { width: 5%; }
             th:nth-child(2), td:nth-child(2) { width: 12%; }
-            th:nth-child(3), td:nth-child(3) { width: 15%; }
+            th:nth-child(3), td:nth-child(3) { width: 20%; }
             th:nth-child(4), td:nth-child(4) { width: 10%; }
-            th:nth-child(5), td:nth-child(5) { width: 10%; }
+            th:nth-child(5), td:nth-child(5) { width: 12%; }
             th:nth-child(6), td:nth-child(6) { width: 12%; }
             th:nth-child(7), td:nth-child(7) { width: 12%; }
             th:nth-child(8), td:nth-child(8) { width: 12%; }
-            th:nth-child(9), td:nth-child(9) { width: 12%; }
+            th:nth-child(9), td:nth-child(9) { width: 5%; }
         }
         
         @media (max-width: 1023px) {
@@ -258,11 +257,40 @@
                             // Pastikan user ada sebelum mencoba mengakses propertinya
                             const userName = monitoring.user ? monitoring.user.name : 'Tidak diketahui';
                             
+                            // Buat format No Order: PPIC-NPK/tahunbulantanggal/unik no 4 digit
+                            // Ambil departemen dari user dan singkat sesuai ketentuan
+                            let dept = monitoring.user ? monitoring.user.dept : 'DEPT';
+                            // Singkat nama departemen
+                            if (dept === 'Quality') dept = 'Quality';
+                            else if (dept === 'PPIC') dept = 'PPIC';
+                            else if (dept === 'Engineering') dept = 'ENG';
+                            else if (dept === 'Plant Engineering') dept = 'PE';
+                            else if (dept === 'Robot') dept = 'Robot';
+                            else if (dept === 'Produksi') dept = 'PR';
+                            else if (dept === 'Mold and Material Development') dept = 'MAMD';
+                            else if (dept === 'Health Care Unit') dept = 'HCU';
+                            else if (dept === 'Purchasing') dept = 'PU';
+                            else if (dept === 'New Project Development') dept = 'NPD';
+                            
+                            const npk = monitoring.user ? monitoring.user.npk : '0000';
+                            
+                            // Ambil tanggal dari created_at
+                            const createdDate = new Date(monitoring.created_at);
+                            const year = createdDate.getFullYear().toString().slice(-2); // 2 digit tahun
+                            const month = String(createdDate.getMonth() + 1).padStart(2, '0');
+                            const day = String(createdDate.getDate()).padStart(2, '0');
+                            const dateStr = `${year}${month}${day}`;
+                            
+                            // Buat nomor unik 4 digit dari id monitoring
+                            const uniqueId = String(monitoring.id).padStart(4, '0');
+                            
+                            // Format No Order
+                            const noOrder = `${dept}-${npk}/${dateStr}${uniqueId}`;
+                            
                             tr.innerHTML = `
                                 <td class="p-2 text-sm text-gray-900 border-r" title="${actualIndex + 1}">${actualIndex + 1}</td>
                                 <td class="p-2 text-sm font-medium text-gray-900 border-r" title="${userName}">${userName}</td>
-                                <td class="p-2 text-sm font-medium text-gray-900 border-r" title="${monitoring.nama_part}">${monitoring.nama_part}</td>
-                                <td class="p-2 text-sm text-gray-900 border-r" title="${monitoring.type}">${monitoring.type}</td>
+                                <td class="p-2 text-sm font-medium text-gray-900 border-r" title="${noOrder}">${noOrder}</td>
                                 <td class="p-2 text-sm text-gray-900 border-r" title="${monitoring.no_mol}">${monitoring.no_mol}</td>
                                 <td class="p-2 text-sm text-gray-900 border-r">
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${monitoring.request === 'Measuring' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}" title="${monitoring.request || '-'}">
@@ -284,7 +312,7 @@
                     } else {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
-                            <td colspan="9" class="p-2 text-center text-sm text-gray-500">Tidak ada data monitoring yang disetujui.</td>
+                            <td colspan="8" class="p-2 text-center text-sm text-gray-500">Tidak ada data monitoring yang disetujui.</td>
                         `;
                         tbody.appendChild(tr);
                     }

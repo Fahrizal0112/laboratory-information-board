@@ -38,6 +38,8 @@ class UserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', 'string', 'in:user,admin'],
+            'dept' => ['required', 'string', 'max:100'],
+            'npk' => ['required', 'string', 'max:50'],
         ]);
 
         User::create([
@@ -45,6 +47,8 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'dept' => $request->dept,
+            'npk' => $request->npk,
         ]);
 
         return redirect()->route('admin.users.index')
@@ -68,12 +72,16 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'role' => ['required', 'string', 'in:user,admin'],
+            'dept' => ['required', 'string', 'max:100'],
+            'npk' => ['required', 'string', 'max:50'],
         ]);
 
         $data = [
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
+            'dept' => $request->dept,
+            'npk' => $request->npk,
         ];
 
         // Update password jika diisi
