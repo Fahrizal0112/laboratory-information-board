@@ -11,8 +11,8 @@ export default defineConfig({
     server: {
         host: '0.0.0.0',
         hmr: {
-            // host: '10.14.39.147',
-            host: '127.0.0.1',
+            host: '10.14.39.147',
+            // host: '127.0.0.1',
             protocol: 'ws'
         },
         watch: {
