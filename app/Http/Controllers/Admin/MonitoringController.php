@@ -49,30 +49,30 @@ class MonitoringController extends Controller
     {
         $request->validate([
             'kode_antrian' => 'required|string|max:255',
-            'status' => 'required|in:pending,approved,rejected,in_progress,completed',
+            'status' => 'required|in:pending,rejected,on_queue,in_progress,on_progress_approval,approved_finish',
             'catatan' => 'nullable|string',
             'request_type' => 'required|in:Measuring,Testing',
         ]);
-
+    
         $data = [
             'kode_antrian' => $request->kode_antrian,
             'status' => $request->status,
             'catatan' => $request->catatan,
             'request' => $request->request_type,
         ];
-
+    
         // Jika status diubah menjadi in_progress, set waktu mulai
         if ($request->status === 'in_progress' && !$monitoring->start) {
             $data['start'] = now()->setTimezone('Asia/Jakarta');
         }
-
-        // Jika status diubah menjadi completed, set waktu selesai
-        if ($request->status === 'completed' && !$monitoring->finish) {
+    
+        // Jika status diubah menjadi approved_finish, set waktu selesai
+        if ($request->status === 'approved_finish' && !$monitoring->finish) {
             $data['finish'] = now()->setTimezone('Asia/Jakarta');
         }
-
+    
         $monitoring->update($data);
-
+    
         return redirect()->route('admin.monitorings.index')
             ->with('success', 'Data monitoring berhasil diperbarui.');
     }
@@ -85,13 +85,13 @@ class MonitoringController extends Controller
         $request->validate([
             'kode_antrian' => 'required|string|max:255',
         ]);
-
+    
         $monitoring->update([
-            'status' => 'approved',
+            'status' => 'on_queue',
             'kode_antrian' => $request->kode_antrian,
             'part_masuk_lab' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d'),
         ]);
-
+    
         return redirect()->route('admin.monitorings.pending')
             ->with('success', 'Data monitoring berhasil disetujui.');
     }
@@ -120,7 +120,7 @@ class MonitoringController extends Controller
     public function completed()
     {
         $monitorings = Monitoring::with('user')
-            ->where('status', 'completed')
+            ->where('status', 'approved_finish')
             ->whereNull('deleted_at')
             ->latest()
             ->get();

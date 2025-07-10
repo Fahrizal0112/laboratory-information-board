@@ -236,31 +236,38 @@
                                 formattedFinish = `${String(finishDate.getDate()).padStart(2, '0')}/${String(finishDate.getMonth() + 1).padStart(2, '0')}/${finishDate.getFullYear()}`;
                             }
                             
-                            // Status label dan warna
                             let statusLabel = monitoring.status;
                             let statusClass = '';
                             
                             if (monitoring.status === 'approved') {
                                 statusLabel = 'Open';
                                 statusClass = 'bg-gray-300 text-gray-800';
+                            } else if (monitoring.status === 'on_queue') {  
+                                statusLabel = 'On Queue';
+                                statusClass = 'bg-blue-300 text-blue-800';
                             } else if (monitoring.status === 'in_progress') {
-                                statusLabel = 'In Progress';
+                                if (monitoring.request === 'Measuring') {
+                                    statusLabel = 'In Progress Measuring';
+                                } else if (monitoring.request === 'Testing') {
+                                    statusLabel = 'In Progress Testing';
+                                } else {
+                                    statusLabel = 'In Progress';
+                                }
                                 statusClass = 'bg-yellow-300 text-yellow-800';
-                            } else if (monitoring.status === 'completed') {
+                            } else if (monitoring.status === 'completed') {  
                                 statusLabel = 'Close';
+                                statusClass = 'bg-green-300 text-green-800';
+                            } else if (monitoring.status === 'approved_finish') {  
+                                statusLabel = 'Approved & Finish';
                                 statusClass = 'bg-green-300 text-green-800';
                             } else if (monitoring.status === 'pending') {
                                 statusLabel = 'Pending';
                                 statusClass = 'bg-red-300 text-red-800';
                             }
                             
-                            // Pastikan user ada sebelum mencoba mengakses propertinya
                             const userName = monitoring.user ? monitoring.user.name : 'Tidak diketahui';
                             
-                            // Buat format No Order: PPIC-NPK/tahunbulantanggal/unik no 4 digit
-                            // Ambil departemen dari user dan singkat sesuai ketentuan
                             let dept = monitoring.user ? monitoring.user.dept : 'DEPT';
-                            // Singkat nama departemen
                             if (dept === 'Quality') dept = 'Quality';
                             else if (dept === 'PPIC') dept = 'PPIC';
                             else if (dept === 'Engineering') dept = 'ENG';
@@ -274,17 +281,14 @@
                             
                             const npk = monitoring.user ? monitoring.user.npk : '0000';
                             
-                            // Ambil tanggal dari created_at
                             const createdDate = new Date(monitoring.created_at);
-                            const year = createdDate.getFullYear().toString().slice(-2); // 2 digit tahun
+                            const year = createdDate.getFullYear().toString().slice(-2);
                             const month = String(createdDate.getMonth() + 1).padStart(2, '0');
                             const day = String(createdDate.getDate()).padStart(2, '0');
                             const dateStr = `${year}${month}${day}`;
                             
-                            // Buat nomor unik 4 digit dari id monitoring
                             const uniqueId = String(monitoring.id).padStart(4, '0');
                             
-                            // Format No Order
                             const noOrder = `${dept}-${npk}/${dateStr}${uniqueId}`;
                             
                             tr.innerHTML = `
@@ -317,44 +321,34 @@
                         tbody.appendChild(tr);
                     }
                     
-                    // Update nomor halaman
                     document.getElementById('current-page').textContent = currentPage + 1;
                     document.getElementById('total-pages').textContent = totalPages;
                     document.getElementById('total-data').textContent = allData.length;
                     
-                    // Increment halaman untuk tampilan berikutnya
                     currentPage = (currentPage + 1) % totalPages;
                     
-                    // Fade in
                     setTimeout(() => {
                         tbody.classList.remove('fade-out');
                         isAnimating = false;
                         
-                        // Jika tidak ada data atau hanya 1 halaman, jangan gunakan interval
                         if (allData.length <= perPage) {
                             return;
                         }
                         
-                        // Hapus timer sebelumnya jika ada
                         if (pageRotationTimer) {
                             clearTimeout(pageRotationTimer);
                         }
                         
-                        // Set timeout untuk menampilkan halaman berikutnya
-                        pageRotationTimer = setTimeout(showData, 10000); // 10 detik
-                    }, 300); // Tunggu 300ms untuk animasi fade in
-                }, 300); // Tunggu 300ms untuk animasi fade out
+                        pageRotationTimer = setTimeout(showData, 10000); 
+                    }, 300); 
+                }, 300);
             }
             
-            // Mulai menampilkan data
             showData();
 
-            // Fungsi untuk running text satu per satu
             function setupRunningText() {
-                // Ambil data running text dari PHP
                 const runningTexts = @json($runningTexts->toArray());
                 
-                // Default text jika tidak ada data
                 if (runningTexts.length === 0) {
                     runningTexts.push({
                         id: 0,
@@ -363,60 +357,44 @@
                     });
                 }
                 
-                // Filter hanya text yang aktif
                 const activeTexts = runningTexts.filter(text => text.active);
                 
                 if (activeTexts.length === 0) {
-                    return; // Tidak ada teks aktif, jangan tampilkan apapun
+                    return;
                 }
                 
-                // Element untuk running text
                 const runningTextElement = document.getElementById('running-text-content');
                 
-                // Index text yang sedang ditampilkan
                 let currentTextIndex = 0;
                 
-                // Fungsi untuk menampilkan teks selanjutnya
                 function showNextText() {
                     const currentText = activeTexts[currentTextIndex];
                     
-                    // Reset animasi dengan menghapus element dan membuatnya kembali
                     runningTextElement.innerHTML = '';
                     runningTextElement.style.animation = 'none';
                     
-                    // Force reflow
                     void runningTextElement.offsetWidth;
                     
-                    // Set teks baru
                     runningTextElement.textContent = currentText.text;
                     
-                    // Tentukan durasi animasi berdasarkan panjang teks
-                    const animationDuration = Math.max(8, currentText.text.length * 0.3); // Minimal 8 detik, atau lebih jika teks panjang
+                    const animationDuration = Math.max(8, currentText.text.length * 0.3); 
                     
-                    // Mulai animasi baru
                     runningTextElement.style.animation = `runningTextAnimation ${animationDuration}s linear 1`;
                     
-                    // Ketika animasi selesai, tampilkan teks berikutnya
                     runningTextElement.addEventListener('animationend', function handler() {
-                        // Increment index dan reset jika sudah di akhir
                         currentTextIndex = (currentTextIndex + 1) % activeTexts.length;
                         
-                        // Hapus event listener ini untuk mencegah duplikasi
                         runningTextElement.removeEventListener('animationend', handler);
                         
-                        // Panggil fungsi ini lagi untuk menampilkan teks berikutnya
-                        setTimeout(showNextText, 500); // Tunggu 0.5 detik sebelum menampilkan teks berikutnya
+                        setTimeout(showNextText, 500);
                     }, { once: true });
                 }
                 
-                // Mulai running text
                 showNextText();
             }
             
-            // Inisialisasi running text
             setupRunningText();
             
-            // Fungsi untuk memeriksa data baru
             function checkForNewData() {
                 fetch('/dashboard/data')
                     .then(response => {
@@ -426,24 +404,20 @@
                         return response.json();
                     })
                     .then(data => {
-                        // Periksa apakah ada perubahan data dengan membandingkan jumlah data
                         const newDataLength = data.approvedMonitorings.length;
                         const oldDataLength = allData.length;
                         
                         if (newDataLength !== oldDataLength) {
                             console.log(`Data baru terdeteksi: ${newDataLength} items (sebelumnya ${oldDataLength})`);
                             
-                            // Update data
                             allData = data.approvedMonitorings;
                             totalPages = Math.ceil(allData.length / perPage) || 1;
                             
-                            // Hentikan rotasi halaman yang sedang berjalan
                             if (pageRotationTimer) {
                                 clearTimeout(pageRotationTimer);
                                 pageRotationTimer = null;
                             }
                             
-                            // Perbarui tampilan dari halaman pertama
                             showData(true);
                         }
                     })
@@ -452,7 +426,6 @@
                     });
             }
             
-            // Periksa data baru setiap 30 detik
             setInterval(checkForNewData, 10000);
         });
     </script>

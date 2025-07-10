@@ -42,9 +42,9 @@ class Monitoring extends Model
         return $this->status === 'pending';
     }
     
-    public function isApproved()
+    public function isOnQueue()
     {
-        return $this->status === 'approved';
+        return $this->status === 'on_queue';
     }
     
     public function isRejected()
@@ -57,9 +57,51 @@ class Monitoring extends Model
         return $this->status === 'in_progress';
     }
     
+    public function isOnProgressApproval()
+    {
+        return $this->status === 'on_progress_approval';
+    }
+    
+    public function isApprovedFinish()
+    {
+        return $this->status === 'approved_finish';
+    }
+    
+    // Method untuk mendapatkan label status yang dinamis
+    public function getStatusLabelAttribute()
+    {
+        switch ($this->status) {
+            case 'pending':
+                return 'Pending';
+            case 'on_queue':
+                return 'On Queue';
+            case 'rejected':
+                return 'Rejected';
+            case 'in_progress':
+                if ($this->request === 'Measuring') {
+                    return 'In Progress Measuring';
+                } elseif ($this->request === 'Testing') {
+                    return 'In Progress Testing';
+                }
+                return 'In Progress';
+            case 'on_progress_approval':
+                return 'On Progress Approval';
+            case 'approved_finish':
+                return 'Approved & Finish';
+            default:
+                return ucfirst(str_replace('_', ' ', $this->status));
+        }
+    }
+    
+    // Legacy methods for backward compatibility
+    public function isApproved()
+    {
+        return $this->status === 'on_queue';
+    }
+    
     public function isCompleted()
     {
-        return $this->status === 'completed';
+        return $this->status === 'approved_finish';
     }
     
     public function isMeasuring()

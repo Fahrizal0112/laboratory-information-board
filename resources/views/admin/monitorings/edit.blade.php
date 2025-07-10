@@ -79,10 +79,11 @@
                                     <x-input-label for="status" :value="__('Status')" />
                                     <select id="status" name="status" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mt-1 w-full">
                                         <option value="pending" {{ old('status', $monitoring->status) == 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="approved" {{ old('status', $monitoring->status) == 'approved' ? 'selected' : '' }}>Open</option>
+                                        <option value="on_queue" {{ old('status', $monitoring->status) == 'on_queue' ? 'selected' : '' }}>On Queue</option>
                                         <option value="rejected" {{ old('status', $monitoring->status) == 'rejected' ? 'selected' : '' }}>Rejected</option>
                                         <option value="in_progress" {{ old('status', $monitoring->status) == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                                        <option value="completed" {{ old('status', $monitoring->status) == 'completed' ? 'selected' : '' }}>Completed</option>
+                                        <option value="on_progress_approval" {{ old('status', $monitoring->status) == 'on_progress_approval' ? 'selected' : '' }}>On Progress Approval</option>
+                                        <option value="approved_finish" {{ old('status', $monitoring->status) == 'approved_finish' ? 'selected' : '' }}>Approved & Finish</option>
                                     </select>
                                     <x-input-error :messages="$errors->get('status')" class="mt-2" />
                                 </div>
@@ -110,4 +111,4 @@
             </div>
         </div>
     </div>
-</x-app-layout> 
+</x-app-layout>

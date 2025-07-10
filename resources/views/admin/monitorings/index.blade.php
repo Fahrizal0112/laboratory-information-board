@@ -53,14 +53,15 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $monitoring->part_masuk_lab ? $monitoring->part_masuk_lab->format('d/m/Y') : '-' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                @if($monitoring->status === 'pending') bg-yellow-100 text-yellow-800 
-                                                @elseif($monitoring->status === 'approved') bg-green-100 text-green-800 
-                                                @elseif($monitoring->status === 'rejected') bg-red-100 text-red-800 
-                                                @elseif($monitoring->status === 'in_progress') bg-blue-100 text-blue-800
-                                                @elseif($monitoring->status === 'completed') bg-purple-100 text-purple-800
+                                            <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                @if($monitoring->status === 'pending') bg-yellow-100 text-yellow-800
+                                                @elseif($monitoring->status === 'on_queue') bg-blue-100 text-blue-800
+                                                @elseif($monitoring->status === 'rejected') bg-red-100 text-red-800
+                                                @elseif($monitoring->status === 'in_progress') bg-orange-100 text-orange-800
+                                                @elseif($monitoring->status === 'on_progress_approval') bg-indigo-100 text-indigo-800
+                                                @elseif($monitoring->status === 'approved_finish') bg-green-100 text-green-800
                                                 @endif">
-                                                {{ ucfirst($monitoring->status) }}
+                                                {{ $monitoring->status_label }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $monitoring->kode_antrian ?? '-' }}</td>
@@ -83,4 +84,4 @@
             </div>
         </div>
     </div>
-</x-app-layout> 
+</x-app-layout>

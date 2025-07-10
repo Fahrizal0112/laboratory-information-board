@@ -15,13 +15,12 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-// Rute dashboard yang dapat diakses tanpa login
 Route::get('/dashboard', function () {
     $approvedMonitorings = \App\Models\Monitoring::with('user')
         ->where(function($query) {
-            $query->where('status', 'approved')
-                ->orWhere('status', 'in_progress')
-                ->orWhere('status', 'completed');
+            $query->where('status', 'on_queue')           
+                ->orWhere('status', 'in_progress')        
+                ->orWhere('status', 'approved_finish');   
         })
         ->latest()
         ->get();
@@ -74,12 +73,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::post('running-texts/reorder', [\App\Http\Controllers\Admin\RunningTextController::class, 'reorder'])->name('admin.running-texts.reorder');
 });
 
+// Update route dashboard/data (baris 77-89)
 Route::get('/dashboard/data', function () {
     $approvedMonitorings = \App\Models\Monitoring::with('user')
         ->where(function($query) {
-            $query->where('status', 'approved')
-                ->orWhere('status', 'in_progress')
-                ->orWhere('status', 'completed');
+            $query->where('status', 'on_queue')           // Status baru: On Queue
+                ->orWhere('status', 'in_progress')        // Tetap sama
+                ->orWhere('status', 'approved_finish');   // Status baru: Approved & Finish
         })
         ->latest()
         ->get();
